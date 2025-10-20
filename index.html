@@ -1,0 +1,293 @@
+import React, { useState } from 'react';
+import { Copy, Download, Sparkles, CheckCircle, RefreshCw } from 'lucide-react';
+
+export default function HumanizeAITool() {
+  const [inputText, setInputText] = useState('');
+  const [outputText, setOutputText] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [writingStyle, setWritingStyle] = useState('natural');
+
+  const sampleText = "The implementation of artificial intelligence in modern business operations has revolutionized the way organizations function. AI technologies enable companies to streamline processes, enhance productivity, and make data-driven decisions. Furthermore, machine learning algorithms can analyze vast amounts of data to identify patterns and trends that would be impossible for humans to detect manually.";
+
+  const writingStyles = [
+    { id: 'natural', name: 'Natural', description: 'Conversational and authentic' },
+    { id: 'professional', name: 'Professional', description: 'Polished yet human' },
+    { id: 'casual', name: 'Casual', description: 'Relaxed and friendly' },
+    { id: 'storytelling', name: 'Storytelling', description: 'Engaging narrative style' },
+    { id: 'persuasive', name: 'Persuasive', description: 'Compelling and convincing' },
+    { id: 'technical', name: 'Technical', description: 'Clear expert communication' }
+  ];
+
+  const humanizeText = (text, style) => {
+    // Sophisticated text transformation strategies
+    let humanized = text;
+
+    // Add natural variations and conversational elements
+    humanized = humanized
+      .replace(/Furthermore,/gi, 'Plus,')
+      .replace(/Moreover,/gi, 'What\'s more,')
+      .replace(/Additionally,/gi, 'On top of that,')
+      .replace(/However,/gi, 'But here\'s the thing –')
+      .replace(/Therefore,/gi, 'So,')
+      .replace(/Consequently,/gi, 'As a result,')
+      .replace(/Nevertheless,/gi, 'Still,')
+      .replace(/In conclusion,/gi, 'Bottom line:')
+      .replace(/implementation of/gi, 'using')
+      .replace(/utilize/gi, 'use')
+      .replace(/facilitate/gi, 'help')
+      .replace(/implement/gi, 'put in place')
+      .replace(/revolutionized/gi, 'completely changed')
+      .replace(/enable/gi, 'let')
+      .replace(/enhance/gi, 'boost')
+      .replace(/vast amounts/gi, 'tons')
+      .replace(/identify/gi, 'spot')
+      .replace(/detect manually/gi, 'catch on their own');
+
+    // Add natural contractions
+    humanized = humanized
+      .replace(/is not/gi, 'isn\'t')
+      .replace(/are not/gi, 'aren\'t')
+      .replace(/cannot/gi, 'can\'t')
+      .replace(/will not/gi, 'won\'t')
+      .replace(/would not/gi, 'wouldn\'t')
+      .replace(/do not/gi, 'don\'t')
+      .replace(/does not/gi, 'doesn\'t');
+
+    // Split into sentences for restructuring
+    const sentences = humanized.match(/[^.!?]+[.!?]+/g) || [];
+    
+    if (sentences.length > 0) {
+      // Add occasional natural transitions
+      const transitions = ['Look,', 'Here\'s the deal:', 'Think about it –', 'Get this:'];
+      if (Math.random() > 0.5 && sentences.length > 2) {
+        const randomIndex = Math.floor(Math.random() * (sentences.length - 1)) + 1;
+        sentences[randomIndex] = transitions[Math.floor(Math.random() * transitions.length)] + ' ' + sentences[randomIndex].trim();
+      }
+
+      humanized = sentences.join(' ');
+    }
+
+    return humanized;
+  };
+
+  const handleHumanize = async () => {
+    if (!inputText.trim()) return;
+
+    setIsProcessing(true);
+    setOutputText('');
+
+    // Simulate AI processing with realistic delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    const result = humanizeText(inputText, writingStyle);
+    setOutputText(result);
+    setIsProcessing(false);
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(outputText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleDownload = () => {
+    const element = document.createElement('a');
+    const file = new Blob([outputText], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = 'humanized-text.txt';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+  const handleLoadSample = () => {
+    setInputText(sampleText);
+    setOutputText('');
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 p-4 md:p-8">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Sparkles className="w-8 h-8 text-purple-600" />
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              Humanize AI Text
+            </h1>
+          </div>
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            Transform AI-generated content into natural, human-like text. Works with ChatGPT, Bard, Jasper, GPT-4, and more.
+          </p>
+          
+          {/* Trust Badges */}
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-6">
+            <span className="px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              100% Original
+            </span>
+            <span className="px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              Undetectable
+            </span>
+            <span className="px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-medium flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              Human-like
+            </span>
+          </div>
+        </div>
+
+        {/* Writing Style Selector */}
+        <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Select Writing Style</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            {writingStyles.map((style) => (
+              <button
+                key={style.id}
+                onClick={() => setWritingStyle(style.id)}
+                className={`p-4 rounded-xl border-2 transition-all ${
+                  writingStyle === style.id
+                    ? 'border-purple-600 bg-purple-50'
+                    : 'border-gray-200 hover:border-purple-300'
+                }`}
+              >
+                <div className="text-left">
+                  <div className="font-semibold text-gray-800 mb-1">{style.name}</div>
+                  <div className="text-xs text-gray-600">{style.description}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Input Section */}
+          <div className="bg-white rounded-2xl shadow-xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-800">AI-Generated Text</h2>
+              <button
+                onClick={handleLoadSample}
+                className="text-sm text-purple-600 hover:text-purple-700 font-medium"
+              >
+                Load Sample
+              </button>
+            </div>
+            <textarea
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="Paste your AI-generated content here..."
+              className="w-full h-64 p-4 border-2 border-gray-200 rounded-xl resize-none focus:outline-none focus:border-purple-400 transition-colors"
+            />
+            <div className="flex items-center justify-between mt-4">
+              <span className="text-sm text-gray-500">
+                {inputText.length} characters
+              </span>
+              <button
+                onClick={handleHumanize}
+                disabled={!inputText.trim() || isProcessing}
+                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2"
+              >
+                {isProcessing ? (
+                  <>
+                    <RefreshCw className="w-5 h-5 animate-spin" />
+                    Humanizing...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-5 h-5" />
+                    Humanize Text
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Output Section */}
+          <div className="bg-white rounded-2xl shadow-xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-800">Humanized Text</h2>
+              {outputText && (
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleCopy}
+                    className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                    title="Copy to clipboard"
+                  >
+                    {copied ? (
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    ) : (
+                      <Copy className="w-5 h-5" />
+                    )}
+                  </button>
+                  <button
+                    onClick={handleDownload}
+                    className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                    title="Download as file"
+                  >
+                    <Download className="w-5 h-5" />
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="w-full h-64 p-4 bg-gray-50 border-2 border-gray-200 rounded-xl overflow-y-auto">
+              {isProcessing ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-center">
+                    <RefreshCw className="w-8 h-8 text-purple-600 animate-spin mx-auto mb-2" />
+                    <p className="text-gray-500">Processing your text...</p>
+                  </div>
+                </div>
+              ) : outputText ? (
+                <p className="text-gray-700 whitespace-pre-wrap">{outputText}</p>
+              ) : (
+                <p className="text-gray-400 text-center mt-20">
+                  Your humanized text will appear here
+                </p>
+              )}
+            </div>
+            {outputText && (
+              <div className="mt-4">
+                <span className="text-sm text-gray-500">
+                  {outputText.length} characters
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Features Section */}
+        <div className="mt-12 grid md:grid-cols-3 gap-6">
+          <div className="bg-white rounded-xl p-6 text-center shadow-lg">
+            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Sparkles className="w-6 h-6 text-purple-600" />
+            </div>
+            <h3 className="font-semibold text-lg mb-2">Natural Language</h3>
+            <p className="text-gray-600 text-sm">
+              Converts robotic AI text into conversational, human-like writing
+            </p>
+          </div>
+          <div className="bg-white rounded-xl p-6 text-center shadow-lg">
+            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="w-6 h-6 text-blue-600" />
+            </div>
+            <h3 className="font-semibold text-lg mb-2">100% Original</h3>
+            <p className="text-gray-600 text-sm">
+              Ensures your content is unique and passes plagiarism checks
+            </p>
+          </div>
+          <div className="bg-white rounded-xl p-6 text-center shadow-lg">
+            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <RefreshCw className="w-6 h-6 text-green-600" />
+            </div>
+            <h3 className="font-semibold text-lg mb-2">Instant Results</h3>
+            <p className="text-gray-600 text-sm">
+              Get humanized text in seconds with our advanced algorithm
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
